@@ -11,9 +11,9 @@ public class Config {
     private Config() {
         this.databaseURL = "jdbc:mysql://localhost:3306/app_passwords";
         this.maxpassguardadas= 10;
-        this.user_nome = "Diogo Ferreira";  // Nome padrão
-        this.user_pass= "admin123";      // Senha padrão (deve ser alterada)
-        this.email = "user@example.com";   // Email padrão
+        this.user_nome = "Diogo Ferreira";
+        this.user_pass= "admin123";
+        this.email = "user@example.com";
     }
 
     public static Config getInstance() {

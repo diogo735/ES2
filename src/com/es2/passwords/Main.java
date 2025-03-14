@@ -10,11 +10,11 @@ public class Main {
 
         while (true) {
             System.out.println("\n---App de passwords ---");
-            System.out.println("1️⃣ Adicionar Site e Pass");
-            System.out.println("2️⃣ Remover Site");
-            System.out.println("3️⃣ Exibir Pass guardadas");
-            System.out.println("4️⃣ Mostrar Defenições da APP");
-            System.out.println("5️⃣ Sair");
+            System.out.println("1 Adicionar Site e Pass");
+            System.out.println("2 Remover Site");
+            System.out.println("3 Exibir Pass guardadas");
+            System.out.println("4 Mostrar Defenições da APP");
+            System.out.println("5 Sair");
             System.out.print("Escolha uma opção: ");
 
             int choice = scanner.nextInt();
