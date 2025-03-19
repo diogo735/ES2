@@ -5,12 +5,12 @@ import java.util.Scanner;
 public class Main {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
-        PasswordManager passwordManager = new PasswordManager();
-        Config configuracao = Config.getInstance();
+
+        PasswordManager passwordManager = PasswordManager.getInstance();
 
         while (true) {
             System.out.println("\n---App de passwords ---");
-            System.out.println("1 Adicionar Site e Pass");
+            System.out.println("1 Adicionar Site e Pass (NOVA FUNÇÃO GERAR) ");
             System.out.println("2 Remover Site");
             System.out.println("3 Exibir Pass guardadas");
             System.out.println("4 Mostrar Defenições da APP");
@@ -24,8 +24,11 @@ public class Main {
                 case 1:
                     System.out.print("- Nome do Site: ");
                     String site = scanner.nextLine();
-                    System.out.print("* Pass: ");
+                    System.out.print("* Pass (se deixar vazia gera automaticamente): ");
                     String pass = scanner.nextLine();
+                    if (pass.trim().isEmpty()) {
+                        pass = null;
+                    }
                     passwordManager.addSite(site, pass);
                     break;
                 case 2:
@@ -37,7 +40,7 @@ public class Main {
                     passwordManager.showSites();
                     break;
                 case 4:
-                    configuracao.showConfig();
+                    passwordManager.showConfig();
                     break;
                 case 5:
                     System.out.println("exit");
