@@ -1,8 +1,6 @@
 package com.es2.passwords;
 
-import com.es2.passwords.algoritmosdegeracao.Password_gerador_letras;
-import com.es2.passwords.algoritmosdegeracao.Password_gerador_numeros;
-import com.es2.passwords.algoritmosdegeracao.Password_gerador_seguro;
+
 
 import java.util.HashMap;
 import java.util.Map;
@@ -51,34 +49,36 @@ public class PasswordManager {
                 int opcao = scanner.nextInt();
                 scanner.nextLine(); // Limpa o buffer
 
+                String tipoGerador;
                 switch (opcao) {
-                    case 1:
-                        vai_gerar_pass = new Password_gerador_letras();
-                        break;
                     case 2:
-                        vai_gerar_pass = new Password_gerador_numeros();
+                        tipoGerador = "letras";
+                        break;
+                    case 1:
+                        tipoGerador = "numeros";
                         break;
                     case 3:
-                        vai_gerar_pass = new Password_gerador_seguro();
+                        tipoGerador = "seguro";
                         break;
                     default:
-                        System.out.println("Opção inválida! Gerarndo por letras");
-                        vai_gerar_pass = new Password_gerador_letras();
+                        System.out.println("Opção inválida! Optando pelo gerador por letras.");
+                        tipoGerador = "letras";
                 }
+
+                vai_gerar_pass = Factory_Password_Gerador.createGenerator(tipoGerador);//cria a instancia do gerador com o Factory patern
+                password = vai_gerar_pass.PalavraPasse_gerada();//gera a pass usando o polimorfismo do factory
+                System.out.println("-> Pass gerada automaticamente: " + password);
+
             }
 
-            password = vai_gerar_pass.PalavraPasse_gerada();
-            System.out.println("-> Pass gerada automaticamente: " + password);
-        }
-
-        if (isValidPassword(password)) {
-            sitePasswords.put(site, password);
-            System.out.println("Password guardada para o site: " + site);
-        } else {
-            System.out.println("⚠ Pass inválida!.");
+            if (isValidPassword(password)) {
+                sitePasswords.put(site, password);
+                System.out.println("Password guardada para o site: " + site);
+            } else {
+                System.out.println("⚠ Pass inválida!.");
+            }
         }
     }
-
 
     public void removeSite(String site) {
         if (sitePasswords.containsKey(site)) {

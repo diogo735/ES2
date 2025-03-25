@@ -7,4 +7,4 @@ public interface PassGerador {
 //ou seja sempre que usamos o Pass gerador na nova calsse ,esta classe vai ter um metodo public String PalavraPasse_gerada()
 // e assim podemos defenir vairos metodus de geraar passes
 
-//e é aqui que é usado o Strategy Pattern
+//e é aqui que é usado o Factory Pattern
