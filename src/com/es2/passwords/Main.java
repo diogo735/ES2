@@ -15,7 +15,7 @@ public class Main {
         int tipoArmazenamento = scanner.nextInt();
         scanner.nextLine();
 
-        Tipo_Armazenamento armazenamento;
+        ArmazenamentoBridge armazenamento;
 
         switch (tipoArmazenamento) {
             case 2:
@@ -35,14 +35,20 @@ public class Main {
             System.out.println("2 Remover Site");
             System.out.println("3 Exibir Pass guardadas");
             System.out.println("4 Mostrar Defenições da APP");
+            System.out.println("6 Exibir categorias e passwords");
+            System.out.println("7 Criar nova categoria");
+            System.out.println("8 Criar Subcategoria");
             System.out.println("5 Sair");
             System.out.print("Escolha uma opção: ");
 
             int choice = scanner.nextInt();
-            scanner.nextLine(); // Limpa o buffer
+            scanner.nextLine();
 
             switch (choice) {
                 case 1:
+                    passwordManager.mostrarCategorias();
+                    System.out.print("Nome da categoria existente: ");
+                    String categoriaAlvo = scanner.nextLine();
                     System.out.print("- Nome do Site: ");
                     String site = scanner.nextLine();
                     System.out.print("* Pass (se deixar vazia gera automaticamente): ");
@@ -69,7 +75,7 @@ public class Main {
                         pass = Factory_Password_Gerador.createGenerator(tipo).PalavraPasse_gerada();// retoirna uma intancia com o gerador correspondente FACTORY
                         System.out.println("-> Password gerada: " + pass);
                     }
-                    passwordManager.addSite(site, pass);//APENAS Guarda
+                    passwordManager.addSite(categoriaAlvo,site, pass);//APENAS Guarda
                     break;
                 case 2:
                     System.out.print("- Site para eliminar: ");
@@ -81,6 +87,22 @@ public class Main {
                     break;
                 case 4:
                     passwordManager.showConfig();
+                    break;
+                case 6:
+                    passwordManager.mostrarCategorias();
+                    break;
+                case 7:
+                    System.out.print("Digite o nome da nova categoria: ");
+                    String nomeCategoria = scanner.nextLine();
+                    passwordManager.criarCategoria(nomeCategoria);
+                    break;
+                case 8:
+                    passwordManager.mostrarCategorias();
+                    System.out.print("Nome da categoria pai: ");
+                    String categoriaPai = scanner.nextLine();
+                    System.out.print("Nome da subcategoria: ");
+                    String nomeSubcategoria = scanner.nextLine();
+                    passwordManager.criarSubcategoria(categoriaPai, nomeSubcategoria);
                     break;
                 case 5:
                     System.out.println("exit");

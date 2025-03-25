@@ -2,14 +2,12 @@ package com.es2.passwords;
 
 
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Scanner;
+import java.util.*;
 
 public class PasswordManager {
     private static PasswordManager instance;
     private Map<String, String> sitePasswords;
-    private Tipo_Armazenamento armazenamento;
+    private ArmazenamentoBridge armazenamento;
 
 
     // configs da app
@@ -18,10 +16,19 @@ public class PasswordManager {
     private String user_nome;
     private String user_pass;
     private String email;
+    private CategoriaComposite raizCategorias = new CategoriaComposite("Root");
 
-    public PasswordManager(Tipo_Armazenamento armazenamento) {
+    public PasswordManager(ArmazenamentoBridge armazenamento) {
         this.armazenamento = armazenamento;
-        this.sitePasswords = armazenamento.mostrar_tudo();
+        this.sitePasswords = new HashMap<>();
+
+        // carregar senhas simples (sem categoria) na memória
+        Map<String, String[]> dados = armazenamento.mostrar_tudo();
+        for (Map.Entry<String, String[]> entry : dados.entrySet()) {
+            String site = entry.getKey();
+            String password = entry.getValue()[1]; // [categoria, password]
+            this.sitePasswords.put(site, password);
+        }
 
 
         // configuração inicial da app
@@ -31,58 +38,115 @@ public class PasswordManager {
         this.user_pass = "admin123";
         this.email = "user@example.com";
     }
-    public static PasswordManager getInstance(Tipo_Armazenamento armazenamento) {
+    public static PasswordManager getInstance(ArmazenamentoBridge armazenamento) {
         if (instance == null) {
             instance = new PasswordManager(armazenamento);
         } else if (instance.armazenamento == null) {
             instance.armazenamento = armazenamento;
-            instance.sitePasswords = armazenamento.mostrar_tudo(); // carregar novamente
+            instance.sitePasswords = new HashMap<>();
+
+            Map<String, String[]> dados = armazenamento.mostrar_tudo();
+            for (Map.Entry<String, String[]> entry : dados.entrySet()) {
+                String site = entry.getKey();
+                String password = entry.getValue()[1]; // [categoria, password]
+                instance.sitePasswords.put(site, password);
+            }
         }
         return instance;
     }
+
 
     public static void resetInstance() {
         instance = null;
     }
 
 
-    public void addSite(String site, String password) {
+    public void addSite(String nomeCategoria, String site, String password) {
         if (password == null || password.isEmpty()) {
             System.out.println("⚠ Password vazia! Não pode guardar.");
             return;
         }
 
+        // Verifique se a categoria realmente existe
+        CategoriaComposite categoria = buscarCategoria(nomeCategoria);
+        if (categoria == null) {
+            System.out.println("⚠ Categoria não encontrada! Não pode guardar.");
+            return;
+        }
+
         if (isValidPassword(password)) {
-            sitePasswords.put(site, password);
-            armazenamento.guardar(site, password);
-            System.out.println("Password guardada para o site: " + site);
+            armazenamento.guardar(nomeCategoria, site, password);
+            System.out.println("✔ Password guardada no armazenamento com sucesso.");
         } else {
             System.out.println("⚠ Pass inválida!.");
         }
     }
 
-    public void removeSite(String site) {
-        if (sitePasswords.containsKey(site)) {
-            sitePasswords.remove(site);
-            armazenamento.remover(site);
-            System.out.println( site + "REMOVIDO!");
+
+    public void mostrarCategorias() {
+        System.out.println("\nCategorias Existentes:");
+        if (raizCategorias != null && !raizCategorias.getFilhos().isEmpty()) {
+            Map<String, List<String>> senhaInfo = new HashMap<>();
+            // Construa o mapa de informações de senha baseado nos dados do armazenamento
+            for (Map.Entry<String, String[]> entry : armazenamento.mostrar_tudo().entrySet()) {
+                String site = entry.getKey();
+                String categoria = entry.getValue()[0];
+                String password = entry.getValue()[1];
+                senhaInfo.putIfAbsent(categoria, new ArrayList<>());
+                senhaInfo.get(categoria).add(site + ": " + password);
+            }
+            raizCategorias.exibir("", senhaInfo);
         } else {
-            System.out.println("Site não encontrado!");
+            System.out.println("Nenhuma categoria existente.");
         }
     }
 
 
+    public void removeSite(String site) {
+        if (sitePasswords.containsKey(site)) {
+            sitePasswords.remove(site);
+            armazenamento.remover(site);
+            System.out.println(site + " REMOVIDO do armazenamento!");
+        } else {
+            System.out.println("Site não encontrado no armazenamento!");
+        }
+    }
+
+
+
+
     public void showSites() {
-        System.out.println("\n Passwords guardadas:");
-        Map<String, String> dados = armazenamento.mostrar_tudo(); // carrega dados reais
+        System.out.println("\nPasswords guardadas:");
+        Map<String, String[]> dados = armazenamento.mostrar_tudo(); // agora retorna [categoria, password]
 
         if (dados.isEmpty()) {
             System.out.println("(nenhuma password guardada)");
             return;
         }
 
-        for (Map.Entry<String, String> entry : dados.entrySet()) {
-            System.out.println("Site: " + entry.getKey() + " | Pass: " + entry.getValue());
+        for (Map.Entry<String, String[]> entry : dados.entrySet()) {
+            String site = entry.getKey();
+            String categoria = entry.getValue()[0];
+            String password = entry.getValue()[1];
+
+            System.out.println("Categoria: " + categoria + " | Site: " + site + " | Pass: " + password);
+        }
+    }
+
+
+    public void criarCategoria(String nomeCategoria) {
+        CategoriaComposite categoria = new CategoriaComposite(nomeCategoria);
+        raizCategorias.adicionar(categoria);
+        System.out.println("✔ Categoria criada: " + nomeCategoria);
+    }
+
+    public void criarSubcategoria(String categoriaPai, String nomeSubcategoria) {
+        CategoriaComposite categoria = buscarCategoria(categoriaPai);
+        if (categoria != null) {
+            categoria.encontrarOuCriarSubcategoria(nomeSubcategoria);
+            System.out.println("Subcategoria '" + nomeSubcategoria + "' criada em '" + categoriaPai + "'");
+        } else {
+            System.out.println("Categoria pai não encontrada!");
         }
     }
 
@@ -94,6 +158,7 @@ public class PasswordManager {
         System.out.println("  - Base de Dados: " + databaseURL);
         System.out.println("  - Máximo de Passwords Guardadas: " + maxpassguardadas);
     }
+
     private boolean isValidPassword(String password) {
         return password.length() >= 4;
     }
@@ -113,4 +178,34 @@ public class PasswordManager {
     public void setEmail(String email) {
         this.email = email;
     }
+
+    public CategoriaComposite buscarCategoria(String nome) {
+        return buscarCategoriaRecursivo(raizCategorias, nome);
+    }
+
+    private CategoriaComposite buscarCategoriaRecursivo(CategoriaComposite atual, String nome) {
+        if (atual.getNome().equalsIgnoreCase(nome)) {
+            return atual;
+        }
+        for (Categoria filho : atual.getFilhos()) {
+            if (filho instanceof CategoriaComposite) {
+                CategoriaComposite achada = buscarCategoriaRecursivo((CategoriaComposite) filho, nome);
+                if (achada != null) return achada;
+            }
+        }
+        return null;
+    }
+    public CategoriaComposite buscarCategoriaPorCaminho(String caminho) {
+        String[] partes = caminho.split(" → ");
+        CategoriaComposite atual = raizCategorias;
+        for (String parte : partes) {
+            atual = atual.encontrarOuCriarSubcategoria(parte);
+            if (atual == null) {
+                return null; // Não encontrou a categoria ou subcategoria
+            }
+        }
+        return atual;
+    }
+
+
 }
