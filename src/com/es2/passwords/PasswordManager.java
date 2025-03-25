@@ -20,11 +20,12 @@ public class PasswordManager {
     private String email;
 
     public PasswordManager(Tipo_Armazenamento armazenamento) {
+        this.armazenamento = armazenamento;
         this.sitePasswords = armazenamento.mostrar_tudo();
 
 
         // configuração inicial da app
-        this.databaseURL = "jdbc:mysql://localhost:3306/app_passwords";
+        this.databaseURL = "jdbc:sqlite:passwords.db";
         this.maxpassguardadas = 10;
         this.user_nome = "Diogo Ferreira";
         this.user_pass = "admin123";
@@ -32,9 +33,16 @@ public class PasswordManager {
     }
     public static PasswordManager getInstance(Tipo_Armazenamento armazenamento) {
         if (instance == null) {
-            instance = new PasswordManager(armazenamento); // ← com parâmetro!
+            instance = new PasswordManager(armazenamento);
+        } else if (instance.armazenamento == null) {
+            instance.armazenamento = armazenamento;
+            instance.sitePasswords = armazenamento.mostrar_tudo(); // carregar novamente
         }
         return instance;
+    }
+
+    public static void resetInstance() {
+        instance = null;
     }
 
 

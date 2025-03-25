@@ -1,5 +1,6 @@
 package com.es2.passwords;
 
+import com.es2.passwords.algoritmosdearmazenamento.Armazenamento_em_BD;
 import com.es2.passwords.algoritmosdearmazenamento.Armazenamento_em_Ficheiro;
 
 import java.util.Scanner;
@@ -7,7 +8,25 @@ import java.util.Scanner;
 public class Main {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
-        Tipo_Armazenamento armazenamento = new Armazenamento_em_Ficheiro();
+        System.out.println("Escolha o tipo de armazenamento:");
+        System.out.println("1 - Ficheiro");
+        System.out.println("2 - Base de Dados");
+        System.out.print("Opção: ");
+        int tipoArmazenamento = scanner.nextInt();
+        scanner.nextLine();
+
+        Tipo_Armazenamento armazenamento;
+
+        switch (tipoArmazenamento) {
+            case 2:
+                armazenamento = new Armazenamento_em_BD();
+                break;
+            case 1:
+            default:
+                armazenamento = new Armazenamento_em_Ficheiro();
+                break;
+        }
+        PasswordManager.resetInstance();
         PasswordManager passwordManager = PasswordManager.getInstance(armazenamento);
 
         while (true) {
