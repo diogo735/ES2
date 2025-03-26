@@ -1,0 +1,27 @@
+
+No sistema de categorias ,o user pode organizar as pass de forma hierárquica ,criando categorias e subscategorias
+
+Utilizamos o Composite pattern poruqe trata objetos individuais e sub objetos da mesma forma,bom
+para estrutuda de arvore.
+A interface comum é Categoria.java e e define os métodos que todos
+os elementos  devem implementar:
+
+ void exibir(String categoria);
+void exibir(String prefixo, Map<String, List<String>> senhaInfo);
+
+O CategoriaComposite.java(Composite) representa uma categoria que pode ter outras categorias ou pass:
+     private final List<Categoria> filhos = new ArrayList<>();
+Principais métodos:
+    - adicionar(...): adiciona subcategorias ou pass
+    - exibir(...): mostra recursivamente toda a hierarquia
+    - remover(site): remove uma senha de dentro da estrutura de cats
+
+ O nosso Pass_tipo_categoria.java(Leaf) Representa uma pass associada a um site, sem filhos.
+    private final String site;
+    private final String password;
+Implementa Categoria, mas não tem filhos. Apenas exibe o site e a senha com o prefixo da categoria onde está inserido.
+
+No PasswordManager.java a raiz da arvore de categorias é :
+private CategoriaComposite raizCategorias = new CategoriaComposite("Root");
+
+Assim o user consegue associar pass a categorias e ver a estrutura destas.

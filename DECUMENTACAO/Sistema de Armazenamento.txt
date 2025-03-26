@@ -1,0 +1,15 @@
+No sistema de armazenamento utilizamos o bridge patern que permite separar a abstração da implementação.
+
+A abstracao é o nosso ArmazenamentoBridge.java :
+public abstract class ArmazenamentoBridge {
+    public abstract void guardar(String categoria, String site, String senha);
+    public abstract void remover(String site);
+    public abstract Map<String, String[]> mostrar_tudo();
+}
+ que assim a logica da nossa app depende desta class e nao das impkementações diretamente
+
+ Temos dois memtos de aramazenamento um em ficheiro txt outo em Base de dados SQlite
+
+ No main o user escolhe o metodo de armazenamento e no nosso password manager usa a logia de guardar ,remover e mostrar
+ independente do metodo de aramazenamento escolhido.
+ Assim existe uma separação de responsabilidades na nossa app ,o password manager nao sabe como os dados sao armazenados.
