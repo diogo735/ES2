@@ -33,6 +33,7 @@ public class Main {
             System.out.println("\n---App de passwords ---");
             System.out.println("1 Adicionar Site e Pass (NOVA FUNÇÃO GERAR) ");
             System.out.println("2 Remover Site");
+            System.out.println("9 Restaurar Site Removido (CTRL+Z)");
             System.out.println("3 Exibir Pass guardadas");
             System.out.println("4 Mostrar Defenições da APP");
             System.out.println("6 Exibir categorias e passwords");
@@ -103,6 +104,9 @@ public class Main {
                     System.out.print("Nome da subcategoria: ");
                     String nomeSubcategoria = scanner.nextLine();
                     passwordManager.criarSubcategoria(categoriaPai, nomeSubcategoria);
+                    break;
+                case 9:
+                    passwordManager.desfazer_remover();
                     break;
                 case 5:
                     System.out.println("exit");

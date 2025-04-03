@@ -1,13 +1,15 @@
 package com.es2.passwords;
 
 
-
+import com.es2.passwords.Historico_Pass;
+import com.es2.passwords.PasswordManager_Memento;
 import java.util.*;
 
 public class PasswordManager {
     private static PasswordManager instance;
     private Map<String, String> sitePasswords;
     private ArmazenamentoBridge armazenamento;
+    private  Historico_Pass historio = new Historico_Pass();
 
 
     // configs da app
@@ -100,17 +102,51 @@ public class PasswordManager {
             System.out.println("Nenhuma categoria existente.");
         }
     }
+    public PasswordManager_Memento salvar_no_historico(String site) {
+        Map<String, String[]> dados = armazenamento.mostrar_tudo();
+        if (dados.containsKey(site)) {
+            String categoria = dados.get(site)[0];
+            String password = dados.get(site)[1];
+            return new PasswordManager_Memento(site, password, categoria);
+        }
+        return null;
+    }
+
+
+    public void retaurar_do_historico(PasswordManager_Memento memento) {
+        sitePasswords.put(memento.getSite(), memento.getPassword());
+        armazenamento.guardar(memento.getCategoria(), memento.getSite(), memento.getPassword());
+        System.out.println("✔ Site restaurado: " + memento.getSite());
+    }
 
 
     public void removeSite(String site) {
-        if (sitePasswords.containsKey(site)) {
-            sitePasswords.remove(site);
-            armazenamento.remover(site);
+        if (armazenamento.mostrar_tudo().containsKey(site)) {
+            PasswordManager_Memento memento = salvar_no_historico(site);
+            if (memento != null) {
+                historio.guardar_estado(memento);
+            }
+
+            sitePasswords.remove(site);           // RAM
+            armazenamento.remover(site);         // armazenamento
             System.out.println(site + " REMOVIDO do armazenamento!");
         } else {
             System.out.println("Site não encontrado no armazenamento!");
         }
     }
+
+    public void desfazer_remover() {
+        PasswordManager_Memento memento = historio.restaurar_ultimo_estado();
+        if (memento != null) {
+            sitePasswords.put(memento.getSite(), memento.getPassword()); // RAM
+            armazenamento.guardar(memento.getCategoria(), memento.getSite(), memento.getPassword()); // armazenamento
+            System.out.println("✔ Site restaurado: " + memento.getSite());
+        } else {
+            System.out.println("⚠ Nada para desfazer.");
+        }
+    }
+
+
 
 
 

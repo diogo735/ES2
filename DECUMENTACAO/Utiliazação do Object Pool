@@ -1,0 +1,12 @@
+O obeject pool serve para ajudar a otimizar a reutilização de objetos pesados ao serem criados ,e no nosso projeto é o caso
+na instacia da classe SecureRandom ,que esta a ser usada para gerar passs seguras.
+
+Como no nosso projeto utilizamos 3 tipos de geradores e todas estas utilizam a classe SecureRandom(que serve para garantir aleatoriadade nas pass)
+estavam sempre cada vez que é chamada a criar instancias ,que é pesado para o sistema.
+Assim com o obect pool só cria um numero limitado de instancias e reutiliza-as.
+
+Ou seja criamos a clase ObejectPool_SecureRandom que é reponsavel por guardar uma pool de instancias de SecureRandom.
+Depois o gerador usa uma instacia de secureRndom atraves do "obtem_secure()"e apos o uso devolve a pool atavel de "devolve_secure()".
+
+Em resumo agora em ver dos geradores usarem e criarem sempre que sao chamados isntancias de SecureRandom,eles tao agora a
+ir burcar ao obejctpool e utilizam e devolvem no final do seu uso,melhorando o desempenho e reduzindo o overhead na criação de objetos.

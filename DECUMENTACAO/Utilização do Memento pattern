@@ -1,0 +1,9 @@
+O memento Pattern permite guardar o estado anterior antes de fazer uma alteração no projeto ,guarda uma cópia.
+No projeto utilizamso para guardar e restaurar o um site que foi removido pelo utilizador.
+Criamos a classe "PasswordManager_Memento" que vai guardar:nome,password,categoria do site que foi removido.
+Assim cada vez que um site for removido,este dados serao guardados pela classe "Historico_pass" que funcionara com um historico
+e que tem uma stack de mementos.
+
+Assim se o utilizador quiseer desfazer a ultima remoção ,ou seja através do metudo "desfazer_remover" recupera o ultimo site
+guardado no histórico e volta a inserir no aramzenamento com os restantes dos outros sites.
+Com isto ,agora podemos desfazer remoçes de sites do aramzenamento ,caso nos enagemos.
