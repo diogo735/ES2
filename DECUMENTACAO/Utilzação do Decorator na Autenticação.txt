@@ -1,0 +1,15 @@
+
+Na nossa app, utilizadmos o decorator para adicionar metodos de autenticacao ao iniciar a app, 
+assim o user pode escolher qual metodo usar para chegar a app em si.
+
+Primeiramente o decorator permite adicionar funcionalidades extras a objetos de forma dinâmica sem alterar o código original,
+o que evita criar subclasses em demasia.
+
+FUnciona da seguinte maneira:
+COm a interface AutenticadorFunc,os metodos e a app pricipal seguena primitindo aplicar decorators de froma diversificada.O app_inicio vai 
+ser decorado com a autenticação e depois temos os dois decorators ,um que é por pin e tou por texto
+O Escolher_Metodo é o decorator controlador e este tem aplicação intera e permite ao utilizaodr escolher o método de auntenticação antes de começar memso.
+O main define que a app só continua se o utilizador passar plea autenticação.
+
+Assim o decorator nao altera o funcionamento interno da aplicação  e permite adiconar novas funcionalidades ,no nosso caso ,metodos de autenticação.
+
