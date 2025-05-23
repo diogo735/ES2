@@ -1,23 +1,17 @@
 // Teste 1
-insomnia.test('Status deve ser 200', () => {
-  insomnia.expect(response.status).to.equal(200);
+insomnia.test('Status deve ser OK', () => {
+  insomnia.expect(insomnia.response.status).to.equal("OK");
 });
 
-// Teste 2
 insomnia.test('Content-Type deve ser application/json', () => {
-  insomnia.expect(response.contentType).to.include('application/json');
+  const header = insomnia.response.headers.find(
+    h => h.key.toLowerCase() === 'content-type'
+  );
+  insomnia.expect(header && header.value).to.include('application/json');
 });
 
-// Teste 3 GET /password/by/:uuid
-insomnia.test('Estrutura do JSON esperada', () => {
-  const schema = {
-    type: "object",
-    properties: {
-      site: { type: "string" },
-      password: { type: "string" }
-    },
-    required: ["site", "password"]
-  };
 
-  insomnia.expect(response.body).to.jsonSchema(schema);
+insomnia.test('Mensagem de sucesso ao atualizar password', () => {
+  const data = JSON.parse(insomnia.response.body);
+  insomnia.expect(data.message).to.equal('Password atualizada com sucesso.');
 });
