@@ -1,18 +1,16 @@
-process.env.AES_KEY = Buffer.from('12345678901234567890123456789012').toString('base64'); // 32 bytes
-process.env.AES_IV = Buffer.from('1234567890123456').toString('base64'); // 16 bytes
-
-
+process.env.AES_KEY = Buffer.from('12345678901234567890123456789012').toString('base64'); 
+process.env.AES_IV = Buffer.from('1234567890123456').toString('base64'); 
 
 
 // POST /password/by-app/:uuid → criarPassword()
 //→ if (!site || typeof site !== 'string' || site.trim().length === 0) [V F F] - api_controllers.js linha 20
-/**
- * Endpoint: POST /password/by-app/:uuid
- * Função: criarPassword()
- * Estrutura testada: if (!site || typeof site !== 'string' || site.trim().length === 0)
- * Condições do input: site = '' → [V F F]
- * Esperado: retorna 400 Bad Request
- * Linha: api_controllers.js linha 20
+/*
+  Endpoint: POST /password/by-app/:uuid
+  Função: criarPassword()
+  Estrutura testada: if (!site || typeof site !== 'string' || site.trim().length === 0)
+  Condições do input: site = '' → [V F F]
+  Esperado: retorna 400 Bad Request
+  Linha: api_controllers.js linha 20
  */
 const { criarPassword } = require('../controllers/api_controllers');
 
@@ -35,13 +33,13 @@ test('POST /password/by-app/:uuid - testa site inválido (vazio) → if (!site |
 
 // PUT /password/by/:uuid → atualizarPassword()
 //→ if (!pass) [V] - api_controllers.js linha 94
-/**
- * Endpoint: PUT /password/by/:uuid
- * Função: atualizarPassword()
- * Estrutura testada: if (!pass)
- * Condições do input: resultado do db.query = []
- * Esperado: retorna 404 Password não existe
- * Linha: api_controllers.js linha 94
+/*
+  Endpoint: PUT /password/by/:uuid
+  Função: atualizarPassword()
+  Estrutura testada: if (!pass)
+  Condições do input: resultado do db.query = []
+  Esperado: retorna 404 Password não existe
+  Linha: api_controllers.js linha 94
  */
 
 const { atualizarPassword } = require('../controllers/api_controllers');
@@ -65,13 +63,13 @@ test('PUT /password/by/:uuid - password inexistente → if (!pass) [V] - linha 9
 
 //GET /password/by/:uuid → obterPassword()
 //→ if (pass.user_id !== userId) [V] - api_controllers.js linha 158
-/**
- * Endpoint: GET /password/by/:uuid
- * Função: obterPassword()
- * Estrutura testada: if (pass.user_id !== userId)
- * Condições do input: user_id ≠ pass.user_id
- * Esperado: retorna 403 Forbidden
- * Linha: api_controllers.js linha 158
+/*
+  Endpoint: GET /password/by/:uuid
+  Função: obterPassword()
+  Estrutura testada: if (pass.user_id !== userId)
+  Condições do input: user_id ≠ pass.user_id
+  Esperado: retorna 403 Forbidden
+  Linha: api_controllers.js linha 158
  */
 
 const { obterPassword } = require('../controllers/api_controllers');
@@ -95,13 +93,13 @@ test('GET /password/by/:uuid - acesso não autorizado → if (pass.user_id !== u
 
 // POST /app → criarApp()
 //→ if (!nome || typeof nome !== 'string' || nome.trim().length === 0) [V F F] - api_controllers.js linha 234
-/**
- * Endpoint: POST /app
- * Função: criarApp()
- * Estrutura testada: if (!nome || typeof nome !== 'string' || nome.trim().length === 0)
- * Condições do input: nome = '' → [V F F]
- * Esperado: retorna 400 Bad Request
- * Linha: api_controllers.js linha 234
+/*
+  Endpoint: POST /app
+  Função: criarApp()
+  Estrutura testada: if (!nome || typeof nome !== 'string' || nome.trim().length === 0)
+  Condições do input: nome = '' → [V F F]
+  Esperado: retorna 400 Bad Request
+  Linha: api_controllers.js linha 234
  */
 
 const { criarApp } = require('../controllers/api_controllers');
