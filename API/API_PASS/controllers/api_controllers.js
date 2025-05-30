@@ -304,11 +304,37 @@ async function listarApps(req, res) {
   }
 }
 
+async function importarApps(req, res) {
+  const appsExternas = [
+    { nome: 'Facebook', uuid: 'fb-123' },
+    { nome: 'Instagram', uuid: 'insta-456' }
+  ];
+
+  try {
+    for (const app of appsExternas) {
+      await db.query('INSERT INTO apps (nome, uuid) VALUES ($1, $2)', [app.nome, app.uuid]);
+    }
+
+    await registarLog({
+      user_id: req.user.id,
+      username: req.user.username,
+      acao: 'importar_apps',
+      descricao: 'Importou apps simuladas de API externa'
+    });
+
+    res.status(201).json({ message: 'Apps importadas com sucesso.' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Erro ao importar apps' });
+  }
+}
+
 
 module.exports = {
     criarPassword,
     atualizarPassword,
     obterPassword,
     criarApp,
-    listarApps
+    listarApps,
+    importarApps
 };

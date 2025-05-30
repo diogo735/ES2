@@ -11,6 +11,7 @@ router.get('/password/by/:uuid', autenticarJWT, controller.obterPassword);
 
 
 // só admins podem ver todas as apps e criálas(user e admin)
+router.post('/import/apps', autenticarJWT, controller.importarApps);
 router.get('/apps', autenticarJWT, verificarRole('admin'), controller.listarApps);
 router.post('/app', autenticarJWT, verificarRole('user', 'admin'), controller.criarApp);
 
